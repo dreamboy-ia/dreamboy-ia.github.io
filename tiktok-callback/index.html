@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TikTok authorisation · Pipit Learns</title>
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#F7F1E5;--ink:#3D2C29;--card:#FFFDF8;--line:#E2D2B4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Segoe UI",system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:32px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+textarea{width:100%;height:120px;font:14px/1.4 ui-monospace,monospace;padding:10px;border:1px solid var(--line);border-radius:10px;overflow-wrap:anywhere}
+button{margin-top:12px;font:inherit;font-weight:700;background:#3D2C29;color:#FFF8EC;border:0;border-radius:999px;padding:10px 22px}
+.err{color:#B3261E}
+</style></head>
+<body><main>
+<h1>Pipit Learns Publisher</h1>
+<div class="card" id="out">Memeriksa…</div>
+</main>
+<script>
+// Redirect target for TikTok Login Kit. It only shows the address TikTok sent you here with, so you can
+// copy it into: python3 tools/publish/tiktok_auth.py token "<address>"
+// Nothing is sent anywhere; the code expires in a few minutes and is useless without the app's secret.
+const q = new URLSearchParams(location.search), out = document.getElementById('out');
+if (q.get('error')) {
+  out.innerHTML = '<p class="err">TikTok menolak otorisasi: ' + (q.get('error_description') || q.get('error')).replace(/</g, '&lt;') + '</p>';
+} else if (q.get('code')) {
+  out.innerHTML = '<p>Otorisasi berhasil. Salin alamat di bawah, lalu jalankan <code>tiktok_auth.py token "…"</code> di laptop Anda dalam beberapa menit (kodenya cepat kedaluwarsa).</p><textarea id="t" readonly></textarea><button id="b">Salin</button>';
+  const t = document.getElementById('t'); t.value = location.href;
+  document.getElementById('b').onclick = () => { t.select(); navigator.clipboard?.writeText(t.value); document.getElementById('b').textContent = 'Tersalin'; };
+} else {
+  out.innerHTML = '<p>Halaman ini adalah alamat kembali (redirect URI) untuk otorisasi TikTok. Tidak ada yang perlu dilakukan di sini.</p>';
+}
+</script>
+</body></html>
